@@ -3,7 +3,7 @@ import styles from "./_attendee_dialog.module.scss";
 import { ThemeContext } from "../AttendeesTable";
 import { MdClose } from "react-icons/md";
 import { getById, update, create } from "../AttendeeService";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function AttendeeDialog() {
