@@ -1,12 +1,13 @@
-import React, { memo, useState, useEffect, useContext } from "react";
+import React, { memo, useState, useEffect } from "react";
 import styles from "./_attendees.module.scss";
-import { getAllAttendees } from "./AttendeeService";
-import { toast } from "react-toastify";
+import { getAllAttendees, getById } from "./AttendeeService";
+import { FaPencilAlt, FaTrash } from "react-icons/fa";
+
+// import { AiOutlineEye } from "react-icons/ai";
 
 function AttendeesTable() {
-  //   const [attendees, setAttendees] = useState([{ id: 1, name: 'John', yearOfBirth: 1990, sex: 'Male', school: 'ABC University', major: 'Computer Science', username: 'Longnd' },
-  //   { id: 2, name: 'Jane', yearOfBirth: 1995, sex: 'Female', school: 'XYZ College', major: 'Business', username: 'Longnd2' },]);
   const [attendees, setAttendees] = useState([]);
+  const [currentAttendeeEdit, setCurrentAttendeeEdit] = useState(null);
 
   useEffect(() => {
     handleLoadPageData();
@@ -25,9 +26,64 @@ function AttendeesTable() {
         throw Error(res.status);
       })
       .catch(function (error) {
-        console.log("Server error");
-        toast.warning("Server error");
+        // toast.warning("Server error");
       });
+  };
+
+  //   const handleViewAttendee = (id) => {
+  //     console.log(`View attendee with ID ${id}`);
+  //     getById(id)
+  //       .then((res) => {
+  //         console.log(res);
+  //         if (res?.data) {
+  //           console.log(res.data);
+  //         //   setAttendees(res.data);
+  //           return;
+  //         }
+  //         throw Error(res.status);
+  //       })
+  //       .catch(function (error) {
+  //         toast.warning("Server error");
+  //       });
+  //   };
+  const handleViewAttendee = (id) => {
+    console.log(`View attendee with ID ${id}`);
+    getById(id)
+      .then((res) => {
+        console.log(res);
+        if (res?.data) {
+          console.log(res.data);
+          //   setAttendees(res.data);
+          return;
+        }
+        throw Error(res.status);
+      })
+      .catch(function (error) {
+        // toast.warning("Server error");
+      });
+  };
+
+  const handleEditAttendee = (id) => {
+    console.log(`Edit attendee with ID ${id}`);
+    getById(id)
+      .then((res) => {
+        console.log(res);
+        if (res?.data) {
+          console.log(res.data);
+          setCurrentAttendeeEdit(res.data);
+          return;
+        }
+        throw Error(res.status);
+      })
+      .catch(function (error) {
+        // toast.warning("Server error");
+      });
+
+    console.log(currentAttendeeEdit);
+  };
+
+  const handleDeleteAttendee = (id) => {
+    console.log(`Delete attendee with ID ${id}`);
   };
 
   return (
@@ -41,6 +97,7 @@ function AttendeesTable() {
           <th>Sex</th>
           <th>School</th>
           <th>Major</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -53,6 +110,20 @@ function AttendeesTable() {
             <td>{attendee.sex}</td>
             <td>{attendee.school}</td>
             <td>{attendee.major}</td>
+            <td className={styles.iconBox}>
+              {/* <AiOutlineEye
+                className={styles.iconView}
+                onClick={() => handleViewAttendee(attendee.id)}
+              /> */}
+              <FaPencilAlt
+                className={styles.iconUpdate}
+                onClick={() => handleEditAttendee(attendee.id)}
+              />
+              <FaTrash
+                className={styles.iconDelete}
+                onClick={() => handleDeleteAttendee(attendee.id)}
+              />
+            </td>
           </tr>
         ))}
       </tbody>

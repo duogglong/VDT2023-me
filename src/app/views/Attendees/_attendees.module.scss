@@ -48,6 +48,27 @@ $attendees-table-row-even-background-color: #f8f9fa;
             tbody tr:last-of-type {
             border-bottom: 1px solid #dee2e6;
             }
+
+            .iconBox {
+                display: flex;
+                justify-content: center;
+                justify-content: space-around;
+                .iconView {
+                    font-size: 1.4rem;
+                    cursor: pointer;
+                    color: rgb(50, 132, 255);
+                }
+                .iconUpdate {
+                    font-size: 1.4rem;
+                    cursor: pointer;
+                    color: rgb(21, 151, 16);
+                }
+                .iconDelete {
+                    font-size: 1.4rem;
+                    cursor: pointer;
+                    color: rgb(168, 0, 0);
+                }
+            }
         }
     }
 }

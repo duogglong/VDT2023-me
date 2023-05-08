@@ -7,3 +7,9 @@ export const getAllAttendees = () => {
     console.log("Call api:" + apiPath);
     return axios.get(apiPath);
 };
+
+export const getById = (id) => {
+    let apiPath = API_ATTENDEES + "/" + id;
+    console.log("Call api:" + apiPath);
+    return axios.get(apiPath);
+};
