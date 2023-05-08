@@ -1,0 +1,53 @@
+@import "../../styles/root";
+$attendees-table-background-color: #fff;
+$attendees-table-header-background-color: #e9ecef;
+$attendees-table-row-even-background-color: #f8f9fa;
+
+.container {
+    width: 100%;
+
+    .title {
+        text-align: center;
+        font-size: 3.9rem;
+        font-weight: 700;
+        line-height: 5rem;
+        @include linerText(45deg, rgb(255, 0, 0), rgb(255, 8, 90));
+    }
+    .table {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+
+        .attendeesTable {
+            width: 90%;
+            border-collapse: collapse;
+            border-spacing: 0;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #212529;
+            background-color: $attendees-table-background-color;
+            border: 1px solid #dee2e6;
+    
+            th,
+            td {
+            padding: 0.75rem;
+            vertical-align: middle;
+            border-top: 1px solid #dee2e6;
+            }
+    
+            th {
+            font-weight: 700;
+            background-color: $attendees-table-header-background-color;
+            }
+    
+            tbody tr:nth-of-type(even) {
+            background-color: $attendees-table-row-even-background-color;
+            }
+    
+            tbody tr:last-of-type {
+            border-bottom: 1px solid #dee2e6;
+            }
+        }
+    }
+}
