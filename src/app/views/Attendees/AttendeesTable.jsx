@@ -1,7 +1,8 @@
 import React, { memo, useState, useEffect, createContext } from "react";
 import styles from "./_attendees.module.scss";
-import { getAllAttendees, getById } from "./AttendeeService";
+import { getAllAttendees, deleteById } from "./AttendeeService";
 import { FaPencilAlt, FaTrash } from "react-icons/fa";
+import { AiOutlineUserAdd } from "react-icons/ai";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -11,7 +12,6 @@ export const ThemeContext = createContext();
 
 function AttendeesTable() {
   const [attendees, setAttendees] = useState([]);
-  const [currentAttendeeEdit, setCurrentAttendeeEdit] = useState(null);
   const [isOpenFormInput, setIsOpenFormInput] = useState(false);
   const [id, setId] = useState(null);
 
@@ -36,40 +36,43 @@ function AttendeesTable() {
       });
   };
 
-  const handleViewAttendee = (id) => {
-    console.log(`View attendee with ID ${id}`);
-    getById(id)
-      .then((res) => {
-        console.log(res);
-        if (res?.data) {
-          console.log(res.data);
-          //   setAttendees(res.data);
-          return;
-        }
-        throw Error(res.status);
-      })
-      .catch(function (error) {
-        console.log(error);
-        toast.warning("Server error");
-      });
-  };
-
   const handleEditAttendee = (id) => {
     console.log(`Edit attendee with ID ${id}`);
     setId(id);
     setIsOpenFormInput(!isOpenFormInput);
   };
 
+  const handleCreateAttendee = (id) => {
+    console.log(`Create attendee with ID ${id}`);
+    setId(id);
+    setIsOpenFormInput(!isOpenFormInput);
+  };
+
   const handleDeleteAttendee = (id) => {
     console.log(`Delete attendee with ID ${id}`);
-    toast.success("Delete success");
+    deleteById(id)
+      .then((res) => {
+        console.log(res);
+        if (res?.data) {
+          console.log(res.data);
+
+          toast.success("Delete success");
+          handleLoadPageData();
+
+          return;
+        }
+        throw Error(res.status);
+      })
+      .catch(function (error) {
+        toast.warning("Server error");
+      });
   };
 
   const providerValue = {
     handleLoadPageData,
-    currentAttendeeEdit,
     setIsOpenFormInput,
-    id
+    id,
+    setId,
   };
 
   return (
@@ -77,6 +80,12 @@ function AttendeesTable() {
       <ThemeContext.Provider value={providerValue}>
         {/* Dialog input Attendee */}
         {isOpenFormInput && <AttendeeDialog />}
+        <div className={styles.add}>
+          <AiOutlineUserAdd
+            className={styles.iconAdd}
+            onClick={() => handleCreateAttendee()}
+          />
+        </div>
         <table className={styles.attendeesTable}>
           <thead>
             <tr>
@@ -87,7 +96,7 @@ function AttendeesTable() {
               <th>Sex</th>
               <th>School</th>
               <th>Major</th>
-              <th>Actions</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>

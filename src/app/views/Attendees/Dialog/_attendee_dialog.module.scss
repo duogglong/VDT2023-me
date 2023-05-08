@@ -12,14 +12,19 @@
     
     .dialog{
         width: 80rem;
-        height: 50rem;
+        height: 34rem;
         background-color: rgb(255, 255, 255);
         position: relative;
-        top: -22%;
-        box-shadow: 0px 1px 27px -3px rgba(255, 0, 0, 0.2);
+        // top: -22%;
+        top: 10%;
+        box-shadow: 0px 1px 27px -3px rgba(0, 0, 0, 0.2);
         display: flex;
         flex-direction: column;
         text-align: center;
+
+        .form {
+            margin: 2px 0;
+        }
 
         .title {
             text-align: center;
@@ -27,7 +32,7 @@
             font-weight: 700;
             line-height: 50px;
             letter-spacing: 0.2rem;
-            @include linerText(45deg, #456072, #1fdb7d);
+            @include linerText(45deg, #456072, #1f71db);
         }
 
         .box {

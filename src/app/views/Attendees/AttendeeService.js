@@ -13,3 +13,21 @@ export const getById = (id) => {
     console.log("Call api:" + apiPath);
     return axios.get(apiPath);
 };
+
+export const update = (obj) => {
+    let apiPath = API_ATTENDEES;
+    console.log("Call api:" + apiPath);
+    return axios.put(apiPath, obj);
+};
+
+export const create = (obj) => {
+    let apiPath = API_ATTENDEES;
+    console.log("Call api:" + apiPath);
+    return axios.post(apiPath, obj);
+};
+
+export const deleteById = (id) => {
+    let apiPath = API_ATTENDEES + "/" + id;
+    console.log("Call api:" + apiPath);
+    return axios.delete(apiPath);
+};
