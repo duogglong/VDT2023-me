@@ -10,4 +10,4 @@ RUN mvn clean package -DskipTests
 FROM openjdk:8-jre-alpine
 WORKDIR /app
 COPY --from=build /app/target/backend-vdt2023.jar /app
-ENTRYPOINT ["java", "-jar", "hw1-docker.jar"]
+ENTRYPOINT ["java", "-jar", "backend-vdt2023.jar"]
