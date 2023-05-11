@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { memo, useContext, useState, useEffect } from "react";
 import styles from "./_attendee_dialog.module.scss";
 import { ThemeContext } from "../AttendeesTable";
