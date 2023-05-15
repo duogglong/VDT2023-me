@@ -1,9 +1,18 @@
 package com.longnd.vn.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 
 @Entity(name = "Attendee")
 @Table(name = "attendee")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class AttendeeEntity {
     private static final long serialVersionUID = 1L;
 
@@ -29,72 +38,4 @@ public class AttendeeEntity {
     @Column(name = "major")
     private String major;
 
-    public AttendeeEntity() {
-    }
-
-    public AttendeeEntity(Long id, String username, String name, Long yearOfBirth, String sex, String school, String major) {
-        this.id = id;
-        this.username = username;
-        this.name = name;
-        this.yearOfBirth = yearOfBirth;
-        this.sex = sex;
-        this.school = school;
-        this.major = major;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Long getYearOfBirth() {
-        return yearOfBirth;
-    }
-
-    public void setYearOfBirth(Long yearOfBirth) {
-        this.yearOfBirth = yearOfBirth;
-    }
-
-    public String getSex() {
-        return sex;
-    }
-
-    public void setSex(String sex) {
-        this.sex = sex;
-    }
-
-    public String getSchool() {
-        return school;
-    }
-
-    public void setSchool(String school) {
-        this.school = school;
-    }
-
-    public String getMajor() {
-        return major;
-    }
-
-    public void setMajor(String major) {
-        this.major = major;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
 }

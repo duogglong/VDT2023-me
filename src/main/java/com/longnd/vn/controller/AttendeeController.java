@@ -1,8 +1,9 @@
 package com.longnd.vn.controller;
 
-import com.longnd.vn.entity.AttendeeEntity;
-import com.longnd.vn.repository.AttendeeRepository;
+import com.longnd.vn.dto.AttendeeDTO;
+import com.longnd.vn.service.AttendeeService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,41 +13,42 @@ import java.util.List;
 @CrossOrigin("*")
 @Slf4j
 public class AttendeeController {
-    private final AttendeeRepository attendeeRepository;
 
-    public AttendeeController(AttendeeRepository attendeeRepository) {
-        this.attendeeRepository = attendeeRepository;
-    }
+    @Autowired
+    private AttendeeService attendeeService;
+//    private final AttendeeService attendeeService;
+
+//    public AttendeeController(AttendeeService attendeeService) {
+//        this.attendeeService = attendeeService;
+//    }
 
     @GetMapping("/all")
-    public List<AttendeeEntity> getAll() {
+    public List<AttendeeDTO> getAll() {
         log.info("Call getAll()");
-        List<AttendeeEntity> result = attendeeRepository.findAll();
-        return result;
+        return attendeeService.getAll();
     }
 
     @GetMapping("/{id}")
-    public AttendeeEntity getById(@PathVariable("id") Long id) {
+    public AttendeeDTO getById(@PathVariable("id") Long id) {
         log.info("Call getById()");
-        return attendeeRepository.findById(id).get();
+        return attendeeService.getById(id);
     }
 
     @PutMapping
-    public AttendeeEntity update(@RequestBody AttendeeEntity attendee) {
+    public AttendeeDTO update(@RequestBody AttendeeDTO attendee) {
         log.info("Call update()");
-        return attendeeRepository.save(attendee);
+        return attendeeService.save(attendee);
     }
 
     @PostMapping
-    public AttendeeEntity create(@RequestBody AttendeeEntity attendee) {
+    public AttendeeDTO create(@RequestBody AttendeeDTO attendee) {
         log.info("Call create()");
-        return attendeeRepository.save(attendee);
+        return attendeeService.save(attendee);
     }
 
     @DeleteMapping("/{id}")
     public Boolean deleteById(@PathVariable("id") Long id) {
         log.info("Call deleteById()");
-        attendeeRepository.deleteById(id);
-        return true;
+        return attendeeService.deleteById(id);
     }
 }
