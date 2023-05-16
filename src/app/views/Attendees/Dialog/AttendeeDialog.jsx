@@ -25,9 +25,9 @@ function AttendeeDialog() {
         getById(id)
         .then((res) => {
           console.log(res);
-          if (res?.data) {
-            console.log(res.data);
-            let attendee = res.data;
+          if (res?.data?.data) {
+            console.log(res.data.data);
+            let attendee = res.data.data;
             setId(attendee.id);
             setName(attendee.name);
             setUsername(attendee.username);
@@ -64,7 +64,7 @@ function AttendeeDialog() {
         create(obj)
           .then((res) => {
             console.log(res);
-            if (res?.data) {
+            if (res?.data?.data) {
               toast.success("Create success");
               handleThenSubmit();
               return;
@@ -78,7 +78,7 @@ function AttendeeDialog() {
         update(obj)
           .then((res) => {
             console.log(res);
-            if (res?.data) {
+            if (res?.data?.data) {
               toast.success("Update success");
               handleThenSubmit();
 

@@ -24,9 +24,9 @@ function AttendeesTable() {
     getAllAttendees()
       .then((res) => {
         console.log(res);
-        if (res?.data) {
-          console.log(res.data);
-          setAttendees(res.data);
+        if (res?.data?.data) {
+          console.log(res.data.data);
+          setAttendees(res.data.data);
           return;
         }
         throw Error(res.status);
@@ -53,8 +53,8 @@ function AttendeesTable() {
     deleteById(id)
       .then((res) => {
         console.log(res);
-        if (res?.data) {
-          console.log(res.data);
+        if (res?.data?.data) {
+          console.log(res.data.data);
 
           toast.success("Delete success");
           handleLoadPageData();
