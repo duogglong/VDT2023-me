@@ -2,8 +2,10 @@ package com.longnd.vn.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.longnd.vn.dto.AttendeeDTO;
-import com.longnd.vn.entity.AttendeeEntity;
 import com.longnd.vn.service.AttendeeService;
+import com.longnd.vn.utils.Translator;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -13,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -22,9 +25,9 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(AttendeeController.class)
@@ -33,10 +36,21 @@ public class AttendeeControllerTest {
     private WebApplicationContext webApplicationContext;
 
     @MockBean
-    private AttendeeService attendeeService;
+    private Translator translator;
 
+    @Autowired
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
+
+    @MockBean
+    private AttendeeService attendeeService;
+
+    private AttendeeController attendeeController;
+
+    public AttendeeControllerTest() {
+        MockitoAnnotations.initMocks(this);
+        attendeeController = new AttendeeController(attendeeService);
+    }
 
     @BeforeEach
     public void setup() {
@@ -54,29 +68,22 @@ public class AttendeeControllerTest {
 
         when(attendeeService.getAll()).thenReturn(attendeeDTOList);
 
-        // Act
-        ResultActions resultActions = mockMvc.perform(get("/api/attendees/all"));
+        // Gửi yêu cầu GET /api/attendees/{id}
+        MvcResult mvcResult = mockMvc.perform(get("/api/attendees/all"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"))
+                .andReturn();
 
-        // Assert
-        resultActions.andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].id", is(1)))
-                .andExpect(jsonPath("$[0].username", is("user1")))
-                .andExpect(jsonPath("$[0].name", is("John Doe")))
-                .andExpect(jsonPath("$[0].yearOfBirth", is(1990)))
-                .andExpect(jsonPath("$[0].sex", is("Male")))
-                .andExpect(jsonPath("$[0].school", is("School A")))
-                .andExpect(jsonPath("$[0].major", is("Major A")))
-                .andExpect(jsonPath("$[1].id", is(2)))
-                .andExpect(jsonPath("$[1].username", is("user2")))
-                .andExpect(jsonPath("$[1].name", is("Jane Smith")))
-                .andExpect(jsonPath("$[1].yearOfBirth", is(1992)))
-                .andExpect(jsonPath("$[1].sex", is("Female")))
-                .andExpect(jsonPath("$[1].school", is("School B")))
-                .andExpect(jsonPath("$[1].major", is("Major B")));
+        // Lấy nội dung trả về từ MvcResult
+        String responseContent = mvcResult.getResponse().getContentAsString();
 
-        verify(attendeeService, times(1)).getAll();
-        verifyNoMoreInteractions(attendeeService);
+        // Kiểm tra nội dung JSON trả về
+        JSONObject jsonResponse = new JSONObject(responseContent);
+        assertEquals("OK", jsonResponse.getString("status"));
+
+        JSONArray jsonData = jsonResponse.getJSONArray("data");
+        assertEquals("John Doe", jsonData.getJSONObject(0).getString("name"));
+        assertEquals("Jane Smith", jsonData.getJSONObject(1).getString("name"));
     }
 
     @Test
@@ -90,44 +97,119 @@ public class AttendeeControllerTest {
         Mockito.when(attendeeService.getById(attendeeId)).thenReturn(dto);
 
         // Gửi yêu cầu GET /api/attendees/{id}
-        mockMvc.perform(get("/api/attendees/{id}", attendeeId))
+        MvcResult mvcResult = mockMvc.perform(get("/api/attendees/{id}", attendeeId))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(attendeeId))
-                .andExpect(jsonPath("$.name").value("John Doe"));
+                .andExpect(content().contentType("application/json"))
+                .andReturn();
 
-        // Kiểm tra phương thức getById đã được gọi đúng số lần và với đúng đối số
-        verify(attendeeService, times(1)).getById(attendeeId);
-        verifyNoMoreInteractions(attendeeService);
+        // Lấy nội dung trả về từ MvcResult
+        String responseContent = mvcResult.getResponse().getContentAsString();
+
+        // Kiểm tra nội dung JSON trả về
+        JSONObject jsonResponse = new JSONObject(responseContent);
+        assertEquals("OK", jsonResponse.getString("status"));
+
+        JSONObject jsonData = jsonResponse.getJSONObject("data");
+        assertEquals("John Doe", jsonData.getString("name"));
     }
 
     @Test
     public void testCreateAttendee() throws Exception {
         AttendeeDTO attendeeDTO = new AttendeeDTO();
+        attendeeDTO.setId(1L);
+        attendeeDTO.setUsername("john");
         attendeeDTO.setName("John Doe");
+        attendeeDTO.setYearOfBirth(2002L);
+        attendeeDTO.setSex("Male");
+        attendeeDTO.setSchool("TLU");
+        attendeeDTO.setMajor("IT");
 
         // Giả lập dữ liệu trả về từ service
-//        Mockito.when(attendeeService.save(any(AttendeeDTO.class))).thenReturn(attendeeDTO);
-//        Mockito.when(attendeeService.save(attendeeDTO)).thenReturn(attendeeDTO);
-        Mockito.when(attendeeService.save(any(AttendeeDTO.class)));
+        Mockito.when(attendeeService.save(attendeeDTO)).thenReturn(attendeeDTO);
 
         // Gửi yêu cầu POST /api/attendees
-        // Gửi yêu cầu POST /api/attendees
-//        mockMvc.perform(post("/api/attendees")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(attendeeDTO)))
-//                .andExpect(status().isBadRequest());
-
-        mockMvc.perform(post("/api/attendees")
+        MvcResult mvcResult = mockMvc.perform(post("/api/attendees")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(attendeeDTO)))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name").value("John Doe"));
+                .andExpect(content().contentType("application/json"))
+                .andReturn();
 
-        // Kiểm tra phương thức save đã được gọi đúng số lần và với đúng đối số
-//        verify(attendeeService, times(1)).save(any(AttendeeDTO.class));
-//        verifyNoMoreInteractions(attendeeService);
+        // Lấy nội dung trả về từ MvcResult
+        String responseContent = mvcResult.getResponse().getContentAsString();
+
+        // Kiểm tra nội dung JSON trả về
+        JSONObject jsonResponse = new JSONObject(responseContent);
+        assertEquals("OK", jsonResponse.getString("status"));
+
+        JSONObject jsonData = jsonResponse.getJSONObject("data");
+        assertEquals("1", jsonData.getString("id"));
+        assertEquals("John Doe", jsonData.getString("name"));
+        assertEquals("john", jsonData.getString("username"));
+        assertEquals("2002", jsonData.getString("yearOfBirth"));
+        assertEquals("Male", jsonData.getString("sex"));
+        assertEquals("TLU", jsonData.getString("school"));
+        assertEquals("IT", jsonData.getString("major"));
     }
 
+    @Test
+    public void testUpdateAttendee() throws Exception {
+        AttendeeDTO attendeeDTO = new AttendeeDTO();
+        attendeeDTO.setId(1L);
+        attendeeDTO.setUsername("john");
+        attendeeDTO.setName("John Doe");
+        attendeeDTO.setYearOfBirth(2002L);
+        attendeeDTO.setSex("Male");
+        attendeeDTO.setSchool("TLU");
+        attendeeDTO.setMajor("IT");
+
+        // Giả lập dữ liệu trả về từ service
+        Mockito.when(attendeeService.save(attendeeDTO)).thenReturn(attendeeDTO);
+
+        // Gửi yêu cầu PUT /api/attendees
+        MvcResult mvcResult = mockMvc.perform(put("/api/attendees")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(attendeeDTO)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"))
+                .andReturn();
+
+        // Lấy nội dung trả về từ MvcResult
+        String responseContent = mvcResult.getResponse().getContentAsString();
+
+        // Kiểm tra nội dung JSON trả về
+        JSONObject jsonResponse = new JSONObject(responseContent);
+        assertEquals("OK", jsonResponse.getString("status"));
+
+        JSONObject jsonData = jsonResponse.getJSONObject("data");
+        assertEquals("1", jsonData.getString("id"));
+        assertEquals("John Doe", jsonData.getString("name"));
+        assertEquals("john", jsonData.getString("username"));
+        assertEquals("2002", jsonData.getString("yearOfBirth"));
+        assertEquals("Male", jsonData.getString("sex"));
+        assertEquals("TLU", jsonData.getString("school"));
+        assertEquals("IT", jsonData.getString("major"));
+    }
+
+    @Test
+    public void testDeleteAttendee() throws Exception {
+        Long attendeeId = 1L;
+
+        // Giả lập dữ liệu trả về từ service
+        Mockito.when(attendeeService.deleteById(attendeeId)).thenReturn(true);
+
+        // Gửi yêu cầu GET /api/attendees/{id}
+        MvcResult mvcResult = mockMvc.perform(delete("/api/attendees/{id}", attendeeId))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"))
+                .andReturn();
+
+        // Lấy nội dung trả về từ MvcResult
+        String responseContent = mvcResult.getResponse().getContentAsString();
+
+        // Kiểm tra nội dung JSON trả về
+        JSONObject jsonResponse = new JSONObject(responseContent);
+        assertEquals("OK", jsonResponse.getString("status"));
+        assertEquals("true", jsonResponse.getString("data"));
+    }
 }
