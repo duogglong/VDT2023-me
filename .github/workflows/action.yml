@@ -4,6 +4,6 @@ on:
     branches: [be]
 jobs:
   say-hello:
-    run-on: ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
       - run: echo Hello world
