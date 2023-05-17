@@ -1,5 +1,4 @@
 name: Java Test All Branch
-description: Run test all project
 
 on: [push, pull_request]
 
