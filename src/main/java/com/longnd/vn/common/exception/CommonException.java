@@ -41,14 +41,14 @@ public class CommonException extends RuntimeException {
         return this;
     }
 
-    public CommonException withError(String field, String code) {
-        Map<String, String> error = new HashMap<>() {{
-            put("field", field);
-            put("code", code);
-        }};
-        this.errors.add(error);
-        return this;
-    }
+//    public CommonException withError(String field, String code) {
+//        Map<String, String> error = new HashMap<>() {{
+//            put("field", field);
+//            put("code", code);
+//        }};
+//        this.errors.add(error);
+//        return this;
+//    }
 
     public CommonException withMessageParams(List<String> messageParams) {
         this.setMessageParams(messageParams);

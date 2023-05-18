@@ -6,7 +6,6 @@ import com.longnd.vn.dto.AttendeeDTO;
 import com.longnd.vn.entity.AttendeeEntity;
 import com.longnd.vn.repository.AttendeeRepository;
 import com.longnd.vn.service.AttendeeService;
-import com.sun.jdi.InternalException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -63,7 +62,7 @@ public class AttendeeServiceImpl implements AttendeeService {
 
     @Override
     public Boolean deleteById(Long id) {
-        if (attendeeRepository.findById(id).isEmpty()) {
+        if (!attendeeRepository.findById(id).isPresent()) {
             throw new EntityNotFoundException();
         }
         attendeeRepository.deleteById(id);
