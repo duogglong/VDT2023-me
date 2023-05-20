@@ -36,9 +36,6 @@ public class AttendeeServiceImpl implements AttendeeService {
 
     @Override
     public AttendeeDTO save(AttendeeDTO dto) {
-        // validate
-        if (1 == 1)
-            throw CommonException.create(HttpStatus.BAD_REQUEST).code(ErrorConstants.USERNAME_REQUIRE);
         if (dto.getUsername() == null) {
             throw CommonException.create(HttpStatus.BAD_REQUEST).code(ErrorConstants.USERNAME_REQUIRE);
         }

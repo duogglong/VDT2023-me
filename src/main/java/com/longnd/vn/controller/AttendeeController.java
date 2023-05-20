@@ -56,4 +56,10 @@ public class AttendeeController {
         log.info("Call deleteById()");
         return ResponseEntity.ok(ApiResponse.ok(attendeeService.deleteById(id)));
     }
+
+    @GetMapping("/ping")
+    public ResponseEntity<ApiResponse<String>> ping() {
+        log.info("Call ping()");
+        return ResponseEntity.ok(ApiResponse.ok("Application Started (v2)!!!"));
+    }
 }
